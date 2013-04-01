@@ -34,8 +34,8 @@
 
 	<distributionManagement>
 		<repository>
-			<id>madrivercode-releases-opensource</id>
-			<url>https://madrivercode.com/nexus/content/repositories/releases-opensource</url>
+			<id>nexus-justdavis-releases-opensource</id>
+			<url>https://justdavis.com/nexus/content/repositories/releases-opensource</url>
 		</repository>
 	</distributionManagement>
 
