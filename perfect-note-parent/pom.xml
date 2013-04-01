@@ -189,6 +189,22 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<!-- Necessary to ensure that release:perform works correctly, per http://stackoverflow.com/questions/5558785/maven-release-plugin-git-and-the-poms-not-at-the-top. -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>perform</goal>
+						</goals>
+						<configuration>
+							<pomFileName>perfect-note-parent/pom.xml</pomFileName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
