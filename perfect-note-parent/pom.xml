@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<prerequisites>
@@ -8,7 +7,7 @@
 
 	<groupId>com.justdavis.perfectnote</groupId>
 	<artifactId>perfect-note-parent</artifactId>
-	<version>0.1.6-SNAPSHOT</version>
+	<version>0.1.6</version>
 	<packaging>pom</packaging>
 
 	<name>perfect-note-parent</name>
@@ -48,7 +47,8 @@
 		<connection>scm:git:git@github.com:karlmdavis/perfect-note.git</connection>
 		<developerConnection>scm:git:git@github.com:karlmdavis/perfect-note.git</developerConnection>
 		<url>scm:git:git@github.com:karlmdavis/perfect-note.git</url>
-	</scm>
+	  <tag>perfect-note-parent-0.1.6</tag>
+  </scm>
 
 	<properties>
 		<!-- As specified in http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding, 
