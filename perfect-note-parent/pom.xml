@@ -8,7 +8,7 @@
 	<groupId>com.justdavis.perfectnote</groupId>
 	<artifactId>perfect-note-parent</artifactId>
 	<version>0.1.6-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>perfect-note-parent</name>
 	<url>https://github.com/karlmdavis/perfect-note</url>
