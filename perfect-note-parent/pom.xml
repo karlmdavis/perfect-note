@@ -37,6 +37,10 @@
 			<id>nexus-justdavis-releases-opensource</id>
 			<url>https://justdavis.com/nexus/content/repositories/releases-opensource</url>
 		</repository>
+		<snapshotRepository>
+			<id>nexus-justdavis-snapshots-opensource</id>
+			<url>https://justdavis.com/nexus/content/repositories/snapshots-opensource</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<scm>
