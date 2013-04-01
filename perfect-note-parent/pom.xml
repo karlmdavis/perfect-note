@@ -1,0 +1,229 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
+	<groupId>com.justdavis.perfectnote</groupId>
+	<artifactId>perfect-note-parent</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>perfect-note-parent</name>
+	<url>https://github.com/karlmdavis/perfect-note</url>
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License v3</name>
+			<url>http://www.spdx.org/licenses/AGPL-3.0</url>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<!-- There doesn't seem to be any tooling support for this yet, but it 
+			doesn't hurt to include it. -->
+		<system>GitHub Issues</system>
+		<url>https://github.com/karlmdavis/perfect-note/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<!-- TODO per http://stackoverflow.com/questions/14754372/whats-the-purpose-of-the-maven-3-cimanagement-configuration#comment20752353_14762245, 
+			Sonar (at least) can use this information. -->
+	</ciManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>madrivercode-releases-opensource</id>
+			<url>https://madrivercode.com/nexus/content/repositories/releases-opensource</url>
+		</repository>
+	</distributionManagement>
+
+	<scm>
+		<!-- URL format taken from http://www.sonatype.com/people/2009/09/maven-tips-and-tricks-using-github/ -->
+		<connection>scm:git:git@github.com:karlmdavis/perfect-note.git</connection>
+		<developerConnection>scm:git:git@github.com:karlmdavis/perfect-note.git</developerConnection>
+		<url>scm:git:git@github.com:karlmdavis/perfect-note.git</url>
+	</scm>
+
+	<properties>
+		<!-- As specified in http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding, 
+			this property is used by many different plugins to. -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- The version of Java that we'll set our plugins to use. -->
+		<javaSourceVersion>1.7</javaSourceVersion>
+
+		<!-- Specifies the settings.xml server ID used for GitHub authentication, 
+			as described on https://github.com/github/maven-plugins. -->
+		<github.global.server>github</github.global.server>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- It adds a lot of noise to this file, but we specify the version 
+					of all plugins used in the module builds here to help ensure that the builds 
+					are always reproducible. This is actually enforced down below by the maven-enforcer-plugin 
+					execution. -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<!-- Set the Java source version used by the compiler. -->
+						<source>${javaSourceVersion}</source>
+						<target>${javaSourceVersion}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.14</version>
+				</plugin>
+				<plugin>
+					<!-- Add some extra information to the JAR manifests. Helpful for folks 
+						looking at a JAR, trying to figure out what it is. -->
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+				<plugin>
+					<!-- The following plugin configuration is taken from https://github.com/github/maven-plugins. 
+						It allows build artifacts to be pushed as GitHub repository downloads. See 
+						that URL for instructions on how to do this. -->
+					<groupId>com.github.github</groupId>
+					<artifactId>downloads-maven-plugin</artifactId>
+					<version>0.5</version>
+					<configuration>
+						<description>${project.version} release of ${project.artifactId}</description>
+						<includeAttached>true</includeAttached>
+						<override>true</override>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<!-- Use the enforcer plugin to help ensure that builds are always 
+							reproducible. -->
+						<id>enforce-plugin-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requirePluginVersions>
+									<message>Undefined plugin versions can lead to un-reproducible
+										builds.</message>
+									<banTimestamps>false</banTimestamps>
+								</requirePluginVersions>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<!-- This profile will only be active for builds inside of Eclipse (managed 
+				by m2e). It's primarily used to manage the execution of plugins in that environment. -->
+			<id>m2e-manage-executions</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-enforcer-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>enforce</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<!-- Don't run this plugin inside m2e; necessary to disable a 
+													POM warning in Eclipse. -->
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+</project>
