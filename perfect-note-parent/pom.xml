@@ -11,6 +11,10 @@
 	<packaging>pom</packaging>
 
 	<name>perfect-note-parent</name>
+	<description>
+		A parent POM for the application suite, which helps to standardize 
+		the plugins, libraries, and build settings used in the various modules.
+	</description>
 	<url>https://github.com/karlmdavis/perfect-note</url>
 	<licenses>
 		<license>
