@@ -63,14 +63,16 @@
 		<github.global.server>github</github.global.server>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<pluginManagement>
@@ -178,6 +180,7 @@
 						<!-- Use the enforcer plugin to help ensure that builds are always 
 							reproducible. -->
 						<id>enforce-plugin-versions</id>
+						<inherited>true</inherited>
 						<goals>
 							<goal>enforce</goal>
 						</goals>
