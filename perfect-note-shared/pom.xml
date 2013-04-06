@@ -25,6 +25,14 @@
 
 	<dependencies>
 		<dependency>
+			<!-- SLF4J is used to make the Java logging dependency mess somewhat sane. 
+				Its APIs should be used for logging, rather than the java.util logging, log4j, 
+				or whatever else. -->
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>

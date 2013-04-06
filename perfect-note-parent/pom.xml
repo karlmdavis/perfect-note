@@ -66,10 +66,22 @@
 		<!-- Specifies the settings.xml server ID used for GitHub authentication, 
 			as described on https://github.com/github/maven-plugins. -->
 		<github.global.server>github</github.global.server>
+
+		<!-- The version of the slf4j libraries to be used. -->
+		<dependency.slf4j.version>1.7.5</dependency.slf4j.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<!-- SLF4J is used to make the Java logging dependency mess somewhat 
+					sane. Its APIs should be used by all of the application suite for logging, 
+					rather than the java.util logging, log4j, or whatever else. -->
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${dependency.slf4j.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
