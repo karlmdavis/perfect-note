@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.justdavis.perfectnote</groupId>
+		<artifactId>perfect-note-android-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>perfect-note-android-app</artifactId>
+	<packaging>apk</packaging>
+	<name>perfect-note-android-app</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.akquinet.android.androlog</groupId>
+			<artifactId>androlog</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<!-- Activate the 'sign-apks' profile during the release:perform phase. -->
+						<releaseProfiles>sign-apks</releaseProfiles>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<!-- Run the manifest-update goal to update any of the managed attributes 
+							in AndroidManifest.xml. -->
+						<id>manifestUpdate</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>manifest-update</goal>
+						</goals>
+					</execution>
+					<execution>
+						<!-- Always run the zipalign goal. -->
+						<id>zipalign-apk</id>
+						<phase>package</phase>
+						<goals>
+							<goal>zipalign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<!-- Activating this profile will disable the android plugin's built-in 
+				signing of APKs with a debug keystore and will instead use the jarsigner 
+				plugin to sign APKs with whatever cert is specified in the 'sign.*' properties 
+				(see below). -->
+			<id>sign-apks</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<!-- Disable the maven plugin's built-in signing, which always just 
+								uses a debug keystore. -->
+							<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+							<artifactId>android-maven-plugin</artifactId>
+							<configuration>
+								<sign>
+									<debug>false</debug>
+								</sign>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<executions>
+							<execution>
+								<!-- This enforcer execution verifies that the Maven properties required 
+									for JAR signing have been set. These properties should be defined in the 
+									user's Maven settings.xml file. -->
+								<id>enforce-signing-properties</id>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<rules>
+										<requireProperty>
+											<property>sign.keystore</property>
+										</requireProperty>
+										<requireFilesExist>
+											<files>
+												<file>${sign.keystore}</file>
+											</files>
+										</requireFilesExist>
+										<requireProperty>
+											<property>sign.alias</property>
+										</requireProperty>
+										<requireProperty>
+											<property>sign.storepass</property>
+										</requireProperty>
+										<requireProperty>
+											<property>sign.keypass</property>
+										</requireProperty>
+									</rules>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<executions>
+							<execution>
+								<!-- This execution of the jarsigner will sign any/all APKs produced 
+									by child projects. The configuration is derived from http://code.google.com/p/maven-android-plugin/wiki/SigningAPKWithMavenJarsigner. -->
+								<id>sign-apks</id>
+								<inherited>true</inherited>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<archiveDirectory></archiveDirectory>
+									<includes>
+										<include>${project.build.directory}/*.apk</include>
+									</includes>
+									<processAttachedArtifacts>false</processAttachedArtifacts>
+									<removeExistingSignatures>true</removeExistingSignatures>
+									<certs>true</certs>
+									<keystore>${sign.keystore}</keystore>
+									<alias>${sign.alias}</alias>
+									<storepass>${sign.storepass}</storepass>
+									<keypass>${sign.keypass}</keypass>
+									<arguments>
+										<argument>-sigalg</argument>
+										<argument>MD5withRSA</argument>
+										<argument>-digestalg</argument>
+										<argument>SHA1</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<!-- This is the same execution as the default one (the one not in 
+									this profile). It's specified here again to ensure that zipalign is run after 
+									signing, per the instructions at http://developer.android.com/tools/help/zipalign.html. -->
+								<id>zipalign-apk</id>
+								<phase>package</phase>
+								<goals>
+									<goal>zipalign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<!-- This profile will be automatically activated by the release plugin, 
+				regardless of the 'releaseProfiles' option. -->
+			<id>release</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+							<artifactId>android-maven-plugin</artifactId>
+							<configuration>
+								<manifest>
+									<!-- When the manifest-update goal is run during a release, ensure 
+										that the version number attributes are updated correctly and that debuggable 
+										is set to false. -->
+									<debuggable>false</debuggable>
+									<versionName>${project.version}</versionName>
+									<versionCodeAutoIncrement>true</versionCodeAutoIncrement>
+								</manifest>
+								<proguard>
+									<!-- With skip set to false, the android plugin will run proguard 
+										against the compilation output in the process-classes phase. -->
+									<skip>false</skip>
+								</proguard>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>build-helper-maven-plugin</artifactId>
+							<executions>
+								<execution>
+									<!-- Ensure that the proguard mapping.txt file is attached to release 
+										builds, so that stacktraces from them can be interpreted. -->
+									<id>attach-proguard-mapping</id>
+									<phase>package</phase>
+									<goals>
+										<goal>attach-artifact</goal>
+									</goals>
+									<configuration>
+										<artifacts>
+											<artifact>
+												<file>${project.build.directory}/proguard/mapping.txt</file>
+												<type>proguard-mapping</type>
+												<classifier>release</classifier>
+											</artifact>
+										</artifacts>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

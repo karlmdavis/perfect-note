@@ -1,0 +1,11 @@
+# Ignore Eclipse metadata files, but include .gitignore itself
+/.*
+!/.gitignore
+
+# Ignore Maven output folders
+/target*/
+
+# Ignore Android output folders
+/bin/
+/gen/
+/proguard/

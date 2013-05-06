@@ -60,8 +60,9 @@
 			this property is used by many different plugins to. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- The version of Java that we'll set our plugins to use. -->
-		<javaSourceVersion>1.7</javaSourceVersion>
+		<!-- The version of Java that we'll set our plugins to use. Android does 
+			not currently support anything later than Java 6, so that's used as the default. -->
+		<javaSourceVersion>1.6</javaSourceVersion>
 
 		<!-- Specifies the settings.xml server ID used for GitHub authentication, 
 			as described on https://github.com/github/maven-plugins. -->
@@ -142,6 +143,16 @@
 							</manifest>
 						</archive>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jarsigner-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.8</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

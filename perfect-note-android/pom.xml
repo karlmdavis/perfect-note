@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.justdavis.perfectnote</groupId>
+		<artifactId>perfect-note-parent</artifactId>
+		<version>0.2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>perfect-note-android-parent</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>perfect-note-android-parent</name>
+
+	<modules>
+		<module>perfect-note-android-app</module>
+		<module>perfect-note-android-it</module>
+	</modules>
+
+	<properties>
+		<!-- These two properties specify the Android platform/API version to be 
+			used. This selection represents "Gingerbread" devices and is based on the 
+			marketshare data published at http://developer.android.com/about/dashboards/index.html. -->
+		<android.platform.version>2.3.3</android.platform.version>
+		<android.api.version>10</android.api.version>
+
+		<!-- This property specifies the name of the Android emulator to test against. 
+			It can be overridden in the Maven settings.xml file, and/or on the command 
+			line with a '-D' option. -->
+		<android.emulator.name>android-10</android.emulator.name>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android</artifactId>
+				<version>${android.platform.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android-test</artifactId>
+				<version>${android.platform.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<!-- Androlog is a logging and reporting library for Android -->
+				<groupId>de.akquinet.android.androlog</groupId>
+				<artifactId>androlog</artifactId>
+				<version>1.0.5</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<!-- This plugin provides the 'apk' packaging type used for this project's 
+						modules. See http://code.google.com/p/maven-android-plugin/ for more information. -->
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<version>3.5.3</version>
+					<configuration>
+						<sdk>
+							<platform>${android.api.version}</platform>
+							<path>${env.ANDROID_HOME}</path>
+						</sdk>
+						<emulator>
+							<avd>${android.emulator.name}</avd>
+							<wait>60000</wait>
+							<!--<options>-no-skin</options> -->
+						</emulator>
+						<undeployBeforeDeploy>true</undeployBeforeDeploy>
+						<manifest>
+							<!-- When the manifest-update goal is run (an execution must be decalred 
+								for that), ensure that the debuggable attribute is set to true, by default. -->
+							<debuggable>true</debuggable>
+						</manifest>
+						<zipalign>
+							<!-- When the zipalign goal is run (an execution must be declared 
+								for that), ensure that it just replaces the default APK artifact, rather 
+								than creating a new one. -->
+							<skip>false</skip>
+							<verbose>false</verbose>
+							<outputApk>${project.build.directory}/${project.finalName}.apk</outputApk>
+						</zipalign>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<!-- Set the Java source version used by the compiler. -->
+						<source>${javaSourceVersion}</source>
+						<target>${javaSourceVersion}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jarsigner-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<!-- This project and its child modules should always be released together. -->
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<profiles>
+		<profile>
+			<!-- This profile will only be active for builds inside of Eclipse, using 
+				the m2eclipse plugin. -->
+			<id>m2e</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<!-- This plugin configuration tells m2eclipse what to do with some 
+								of the plugin executions that will be configured for the android-maven-plugin. -->
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<!-- Run any manifest-update goal executions during Eclipse full/clean 
+												builds. -->
+											<pluginExecutionFilter>
+												<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+												<artifactId>android-maven-plugin</artifactId>
+												<versionRange>[3.2.0,)</versionRange>
+												<goals>
+													<goal>manifest-update</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<execute>
+													<runOnIncremental>false</runOnIncremental>
+												</execute>
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+												<artifactId>android-maven-plugin</artifactId>
+												<versionRange>[3.2.0,)</versionRange>
+												<goals>
+													<!-- Skip any generate-sources goal executions during Eclipse 
+														builds, as the "normal" Eclipse Android plugins will take care of this. -->
+													<goal>generate-sources</goal>
+
+													<!-- Skip any proguard goal executions during Eclipse builds, 
+														as the execution likely won't do anything except during releases, and releases 
+														must be run outside of Eclipse anyways. -->
+													<goal>proguard</goal>
+
+													<!-- Skip any emulator-* executions during Eclipse builds. Developers 
+														must start/stop the emulator themselves when developing in Eclipse. -->
+													<goal>emulator-start</goal>
+													<goal>emulator-stop</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

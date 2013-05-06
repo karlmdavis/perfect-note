@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.justdavis.perfectnote</groupId>
+		<artifactId>perfect-note-android-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>perfect-note-android-it</artifactId>
+	<packaging>apk</packaging>
+	<name>perfect-note-android-it</name>
+
+	<!-- FIXME: This project does not generate or collect any code coverage 
+		data. It looks like the best way to do so would be to use the android plugin's 
+		Emma support. -->
+
+	<properties>
+		<!-- When not running a release, we are deploying the plain artifact (so 
+			no classifier) This is overridden during the release. -->
+		<zipaligned-classifier></zipaligned-classifier>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android-test</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.justdavis.perfectnote</groupId>
+			<artifactId>perfect-note-android-app</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<type>apk</type>
+			<!-- The classifier is set according to whether or not the "release" profile 
+				is in use -->
+			<classifier>${zipaligned-classifier}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.justdavis.perfectnote</groupId>
+			<artifactId>perfect-note-android-app</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<!-- Start the Android emulator (as defined in the parent POM) at the 
+							start of this build. -->
+						<id>android-emulator-start</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>emulator-start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<!-- Start the Android emulator (as defined in the parent POM) after 
+							the ITs have completed. -->
+						<id>android-emulator-stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>emulator-stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
